@@ -1,0 +1,85 @@
+# Configuration of MQTT devices to be bridged
+
+broker = "192.168.1.22:1883"
+
+[[temperaturesensor]]
+displayname = "Balcony Temperature"
+topic = "home/balcony/temp"
+min = "-40"
+max = "80"
+inc = "0.1"
+manufacturer = "Dan"
+model = "Jeenode"
+
+
+[[temperaturesensor]]
+displayname = "Bedroom Temperature"
+topic = "home/bedroom/temp"
+min = "-40"
+max = "80"
+inc = "0.1"
+manufacturer = "Dan"
+model = "Clocknode"
+
+[[temperaturesensor]]
+displayname = "Lounge Temperature"
+topic = "home/lounge/temp"
+min = "-40"
+max = "80"
+inc = "0.1"
+manufacturer = "Dan"
+model = "Jeenode"
+
+[[lightsensor]]
+displayname = "Balcony Light"
+topic = "home/balcony/light"
+manufacturer = "Dan"
+model = "Jeenode"
+
+[[lightsensor]]
+displayname = "Bedroom Light"
+topic = "home/bedroom/light"
+manufacturer = "Dan"
+model = "Clocknode"
+
+[[lightsensor]]
+displayname = "Lounge Light"
+topic = "home/lounge/light"
+manufacturer = "Dan"
+model = "Jeenode"
+
+# [temperaturesensor.Balcony]
+#   displayname = "Balcony Temperature"
+#   topic = "home/balcony/temp"
+#   manufacturer = "Dan"
+#   model = "Jeenode"
+
+# [temperaturesensor.Bedroom]
+#   displayname = "Bedroom Temperature"
+#   topic = "home/bedroom/temp"
+#   manufacturer = "Dan"
+#   model = "Clocknode"
+
+# [temperaturesensor.Lounge]
+#   displayname = "Lounge Temperature"
+#   topic = "home/lounge/temp"
+#   manufacturer = "Dan"
+#   model = "Jeenode"
+
+# [lightsensor.Balcony]
+# displayname = "Balcony Light"
+# topic = "home/balcony/light"
+# manufacturer = "Dan"
+# model = "Jeenode"
+#
+# [lightsensor.Bedroom]
+# displayname = "Bedroom Light"
+# topic = "home/bedroom/light"
+# manufacturer = "Dan"
+# model = "Clocknode"
+#
+# [lightsensor.Lounge]
+# displayname = "Lounge Light"
+# topic = "home/lounge/light"
+# manufacturer = "Dan"
+# model = "Jeenode"
