@@ -22,24 +22,26 @@ type BridgeableDevice interface {
 type Bridge struct {
 	*accessory.Accessory
 
-	transport  hc.Transport
-	deviceList map[string]BridgeableDevice
+	transport       hc.Transport
+	transportConfig hc.Config
+	deviceList      map[string]BridgeableDevice
 
 	mqttClient *clientService.Client
 	logger     *logging.Logger
 }
 
 // NewBridge provides a new bridge device for accepting services.
-func NewBridge(brokerIP string) *Bridge {
+func NewBridge(brokerIP, pin, name, model, manufacturer string) *Bridge {
 	b := Bridge{
 		Accessory: accessory.New(accessory.Info{
-			Name: "MQTTBridge",
-			//Model:        "MQTTBridge",
-			//Manufacturer: "Me!",
+			Name:         name,
+			Model:        model,
+			Manufacturer: manufacturer,
 		}, accessory.TypeBridge),
-		deviceList: make(map[string]BridgeableDevice),
-		mqttClient: clientService.New(brokerIP, "MQTTHomekitBridge", false),
-		logger:     logging.New("MQTTHomekitBridge"),
+		transportConfig: hc.Config{Pin: pin},
+		deviceList:      make(map[string]BridgeableDevice),
+		mqttClient:      clientService.New(brokerIP, "MQTTHomekitBridge", false),
+		logger:          logging.New("MQTTHomekitBridge"),
 	}
 
 	b.logger.Enable()
@@ -63,10 +65,11 @@ func (b *Bridge) AddServices(devices []BridgeableDevice) {
 // Start transport
 func (b *Bridge) Start() {
 	b.logger.Message("Starting")
+
 	b.subscribeTopics()
 
 	var err error
-	b.transport, err = hc.NewIPTransport(hc.Config{}, b.Accessory)
+	b.transport, err = hc.NewIPTransport(b.transportConfig, b.Accessory)
 	if err != nil {
 		log.Fatal(err)
 	}

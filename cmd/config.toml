@@ -25,3 +25,19 @@ topic = "home/bedroom/light"
 [[lightsensor]]
 displayname = "Lounge Light"
 topic = "home/lounge/light"
+
+[[pressuresensor]]
+displayname = "Barometric Pressure"
+topic = "home/lounge/pressure"
+
+[[windSensor]]
+displayname = "Falkner Beacon"
+topic = "bom/falkner/windspeed"
+
+[[windSensor]]
+displayname = "St Kilda"
+topic = "bom/stkilda/windspeed"
+
+[[windSensor]]
+displayname = "South Channel"
+topic = "bom/southchannel/windspeed"

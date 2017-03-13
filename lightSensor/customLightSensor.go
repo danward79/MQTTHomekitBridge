@@ -35,7 +35,7 @@ func newCurrentAmbientLightLevel() *CurrentAmbientLightLevel {
 	char.SetMaxValue(100)
 	char.SetStepValue(0.1)
 	char.SetValue(0)
-	char.Unit = characteristic.UnitPercentage
+	char.Unit = characteristic.UnitPercentage //TODO: Fix units.. Lus still showing....
 
 	return &CurrentAmbientLightLevel{char}
 }

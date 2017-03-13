@@ -16,7 +16,7 @@ func New(s string) *Logger {
 	return &l
 }
 
-// Message logs a message with using the make of the logger
+// Message logs a message with using the name of the logger
 func (l *Logger) Message(s string, v ...string) {
 
 	if l.enabled {
@@ -27,6 +27,20 @@ func (l *Logger) Message(s string, v ...string) {
 		}
 
 		log.Printf("[%s] %s\n", l.name, s)
+	}
+}
+
+// Fatal logs a message with using the name of the logger
+func (l *Logger) Fatal(s string, v ...string) {
+
+	if l.enabled {
+		if len(v) > 0 {
+			for _, value := range v {
+				s = s + " " + value
+			}
+		}
+
+		log.Fatalf("[%s] %s\n", l.name, s)
 	}
 }
 

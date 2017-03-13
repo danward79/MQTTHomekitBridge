@@ -1,23 +1,35 @@
 package main
 
 import (
+	"fmt"
+
 	bridge "github.com/danward79/MQTTHomekitBridge"
 	"github.com/danward79/MQTTHomekitBridge/lightSensor"
 	"github.com/danward79/MQTTHomekitBridge/logging"
 	"github.com/danward79/MQTTHomekitBridge/temperatureSensor"
 )
 
-func main() {
-	l := logging.New("MQTTBridgeDeamon")
+var (
+	l *logging.Logger
+)
+
+func init() {
+	l = logging.New("MQTTBridgeDeamon")
 	l.Enable()
+
+	if err := loadConfig(); err != nil {
+		l.Fatal(fmt.Sprintf("Error reading config: %v", err))
+	}
+}
+
+func main() {
 	l.Message("Started")
 
-	bridge := bridge.NewBridge("192.168.1.22:1883")
+	bridge := bridge.NewBridge(brokerIP, pinCode, "MQTTBridge", "MQTTBridge", "me!")
 
 	bridge.AddServices(readConfig())
 
 	bridge.Start()
-
 }
 
 // TODO: Add ability to read TOML config file.....

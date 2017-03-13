@@ -6,7 +6,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-var brokerIP string
+var (
+	brokerIP, pinCode string
+)
 
 func loadConfig() error {
 
@@ -24,13 +26,16 @@ func loadConfig() error {
 	if *broker != "" {
 		viper.Set("broker", *broker)
 	}
+	brokerIP = viper.GetString("broker")
+
+	viper.SetDefault("pin", "00102003")
+	pinCode = viper.GetString("pin")
 
 	if err := viper.ReadInConfig(); err != nil {
 		return err
 	}
 
-	brokerIP = viper.GetString("broker")
-	//logMessage(fmt.Sprintf("Broker: %s", brokerIP))
+	l.Message("Broker:", brokerIP)
 
 	return nil
 }
