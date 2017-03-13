@@ -1,12 +1,13 @@
 package bridge
 
 import (
-	"fmt"
 	"log"
+	"os"
 
 	"github.com/brutella/hc"
 	"github.com/brutella/hc/accessory"
 	"github.com/brutella/hc/service"
+	"github.com/danward79/MQTTHomekitBridge/logging"
 	"github.com/danward79/Thingamabob/clientService"
 )
 
@@ -25,6 +26,7 @@ type Bridge struct {
 	deviceList map[string]BridgeableDevice
 
 	mqttClient *clientService.Client
+	logger     *logging.Logger
 }
 
 // NewBridge provides a new bridge device for accepting services.
@@ -33,12 +35,15 @@ func NewBridge(brokerIP string) *Bridge {
 		Accessory: accessory.New(accessory.Info{
 			Name: "MQTTBridge",
 			//Model:        "MQTTBridge",
-			//Manufacturer: "Dan!",
+			//Manufacturer: "Me!",
 		}, accessory.TypeBridge),
 		deviceList: make(map[string]BridgeableDevice),
 		mqttClient: clientService.New(brokerIP, "MQTTHomekitBridge", false),
+		logger:     logging.New("MQTTHomekitBridge"),
 	}
 
+	b.logger.Enable()
+	b.logger.Message("New Bridge device created")
 	return &b
 }
 
@@ -49,7 +54,7 @@ func (b *Bridge) AddServices(devices []BridgeableDevice) {
 		b.AddService(d.Service())
 
 		if _, ok := b.deviceList[d.Topic()]; !ok {
-			fmt.Println("TOPIC", d.Topic())
+			b.logger.Message("Adding service: TOPIC", d.Topic())
 			b.deviceList[d.Topic()] = d
 		}
 	}
@@ -57,10 +62,8 @@ func (b *Bridge) AddServices(devices []BridgeableDevice) {
 
 // Start transport
 func (b *Bridge) Start() {
-	fmt.Println("subscribe ")
-	//msgFeed :=
+	b.logger.Message("Starting")
 	b.subscribeTopics()
-	fmt.Println("subscribe done")
 
 	var err error
 	b.transport, err = hc.NewIPTransport(hc.Config{}, b.Accessory)
@@ -68,10 +71,14 @@ func (b *Bridge) Start() {
 		log.Fatal(err)
 	}
 
-	//fmt.Println("Bla")
-	//go watch(msgFeed)
+	hc.OnTermination(func() {
+		if b.transport != nil {
+			b.transport.Stop()
+		}
 
-	//go b.transport.Start()
+		os.Exit(1)
+	})
+
 	b.transport.Start()
 }
 
@@ -83,13 +90,16 @@ func (b *Bridge) subscribeTopics() chan clientService.Message {
 	}
 
 	f := b.mqttClient.SubscribeMultiple(topics)
-	//f := b.mqttClient.Subscribe("home/bedroom/temp")
+
+	b.logger.Message("Subscribing topics")
+
 	go b.watch(f)
 	return f
 }
 
 func (b *Bridge) watch(f <-chan clientService.Message) {
-	fmt.Println("WATCHING")
+	b.logger.Message("Watching topics")
+
 	for msg := range f {
 		b.deviceList[msg.Topic()].Update(msg.Payload())
 	}

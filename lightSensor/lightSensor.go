@@ -9,7 +9,7 @@ import (
 
 // LightSensor stores the details of a device that is being bridged
 type LightSensor struct {
-	*service.LightSensor
+	*CustomLightSensor
 
 	Name  *characteristic.Name
 	topic string
@@ -19,13 +19,14 @@ type LightSensor struct {
 func New(topic, displayName string) *LightSensor {
 
 	l := LightSensor{
-		LightSensor: service.NewLightSensor(),
+		//LightSensor: service.NewLightSensor(),
+		CustomLightSensor: newLightSensor(),
 
 		topic: topic,
 	}
 
-	l.LightSensor.CurrentAmbientLightLevel.SetMinValue(0)
-	l.LightSensor.CurrentAmbientLightLevel.SetMaxValue(100)
+	l.CustomLightSensor.CurrentAmbientLightLevel.SetMinValue(0)
+	l.CustomLightSensor.CurrentAmbientLightLevel.SetMaxValue(100)
 	l.Name = characteristic.NewName()
 	l.Name.SetValue(displayName)
 	l.AddCharacteristic(l.Name.Characteristic)
@@ -42,7 +43,7 @@ func (l *LightSensor) Update(value []byte) error {
 
 // Service returns the service
 func (l *LightSensor) Service() *service.Service {
-	return l.LightSensor.Service
+	return l.CustomLightSensor.Service
 }
 
 // Topic returns the topic

@@ -9,9 +9,10 @@ import (
 
 func main() {
 	l := logging.New("MQTTBridgeDeamon")
+	l.Enable()
 	l.Message("Started")
 
-	bridge := bridge.NewBridge("localhost:1883")
+	bridge := bridge.NewBridge("192.168.1.22:1883")
 
 	bridge.AddServices(readConfig())
 
@@ -27,8 +28,8 @@ func readConfig() []bridge.BridgeableDevice {
 	devs = append(devs, temperatureSensor.New("home/balcony/temp", "Balcony Temperature"))
 
 	devs = append(devs, lightSensor.New("home/bedroom/light", "Bedroom Light"))
-	//devs = append(devs, lightSensor.New("home/lounge/light", "Lounge Light"))
-	//devs = append(devs, lightSensor.New("home/balcony/light", "Balcony Light"))
+	devs = append(devs, lightSensor.New("home/lounge/light", "Lounge Light"))
+	devs = append(devs, lightSensor.New("home/balcony/light", "Balcony Light"))
 
 	return devs
 }
