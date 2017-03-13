@@ -20,7 +20,7 @@ func main() {
 
 }
 
-// TODO: Add ability to read TOML config file....
+// TODO: Add ability to read TOML config file.....
 func readConfig() []bridge.BridgeableDevice {
 	devs := []bridge.BridgeableDevice{}
 
