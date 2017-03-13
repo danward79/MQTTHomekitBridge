@@ -26,6 +26,7 @@ A simple config file should allow mapping the devices to be bridged. TOML may be
 
 ``` TOML
 # Configuration of MQTT devices to be bridged
+# TODO: format still to be finalised....
 
 [system]
 broker = "192.168.1.22:6767"
