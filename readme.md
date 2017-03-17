@@ -26,20 +26,23 @@ A simple config file should allow mapping the devices to be bridged. TOML may be
 
 ``` TOML
 # Configuration of MQTT devices to be bridged
-# TODO: format still to be finalised....
 
-[system]
-broker = "192.168.1.22:6767"
+#pin = "10340567"
+broker = "192.168.1.22:1883"
 
-[temperaturesensor.Balcony]
-  displayname = "Balcony Temperature"
-  topic = "home/balcony/temp"
-  manufacturer = "Dan"
-  model = "Jeenode"
+[[devices.temperaturesensor]]
+displayname = "Balcony Temperature"
+topic = "home/balcony/temp"
 
-[lightsensor.Balcony]
-  displayname = "Balcony Light"
-  topic = "home/balcony/light"
-  manufacturer = "Dan"
-  model = "Jeenode"
+[[devices.temperaturesensor]]
+displayname = "Lounge Temperature"
+topic = "home/lounge/temp"
+
+[[devices.lightsensor]]
+displayname = "Balcony Light"
+topic = "home/balcony/light"
+
+[[devices.lightsensor]]
+displayname = "Lounge Light"
+topic = "home/lounge/light"
 ```

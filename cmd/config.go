@@ -82,7 +82,7 @@ func readConfigFile() []bridge.BridgeableDevice {
 	return devs
 }
 
-// TODO: Add ability to read TOML config file.....
+// readConfig previously used to load hard-coded configuration.
 func readConfig() []bridge.BridgeableDevice {
 	devs := []bridge.BridgeableDevice{}
 
