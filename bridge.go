@@ -11,6 +11,9 @@ import (
 	"github.com/danward79/Thingamabob/clientService"
 )
 
+// AccessoryDevices stores a list of available accessory device types for the bridge
+var AccessoryTypes = []string{"temperaturesensor", "lightsensor"}
+
 // BridgeableDevice is a device that can be bridged between homekit and mqtt
 type BridgeableDevice interface {
 	Update([]byte) error

@@ -1,43 +1,46 @@
 # Configuration of MQTT devices to be bridged
 
+#pin = "10340567"
 broker = "192.168.1.22:1883"
 
-[[temperaturesensor]]
+#[devices]
+
+[[devices.temperaturesensor]]
 displayname = "Balcony Temperature"
 topic = "home/balcony/temp"
 
-[[temperaturesensor]]
+[[devices.temperaturesensor]]
 displayname = "Bedroom Temperature"
 topic = "home/bedroom/temp"
 
-[[temperaturesensor]]
+[[devices.temperaturesensor]]
 displayname = "Lounge Temperature"
 topic = "home/lounge/temp"
 
-[[lightsensor]]
+[[devices.lightsensor]]
 displayname = "Balcony Light"
 topic = "home/balcony/light"
 
-[[lightsensor]]
+[[devices.lightsensor]]
 displayname = "Bedroom Light"
 topic = "home/bedroom/light"
 
-[[lightsensor]]
+[[devices.lightsensor]]
 displayname = "Lounge Light"
 topic = "home/lounge/light"
 
-[[pressuresensor]]
-displayname = "Barometric Pressure"
-topic = "home/lounge/pressure"
-
-[[windSensor]]
-displayname = "Falkner Beacon"
-topic = "bom/falkner/windspeed"
-
-[[windSensor]]
-displayname = "St Kilda"
-topic = "bom/stkilda/windspeed"
-
-[[windSensor]]
-displayname = "South Channel"
-topic = "bom/southchannel/windspeed"
+  # [[pressuresensor]]
+  # displayname = "Barometric Pressure"
+  # topic = "home/lounge/pressure"
+  #
+  # [[windSensor]]
+  # displayname = "Falkner Beacon"
+  # topic = "bom/falkner/windspeed"
+  #
+  # [[windSensor]]
+  # displayname = "St Kilda"
+  # topic = "bom/stkilda/windspeed"
+  #
+  # [[windSensor]]
+  # displayname = "South Channel"
+  # topic = "bom/southchannel/windspeed"

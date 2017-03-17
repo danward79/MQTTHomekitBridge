@@ -55,5 +55,7 @@ func parseFloat64(s string, defaultValue float64) float64 {
 	if err != nil {
 		return defaultValue
 	}
+
+	//fmt.Println("parseFloat: String:", s, "Float:", f)
 	return f
 }
