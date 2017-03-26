@@ -2,8 +2,7 @@
 
 #pin = "10340567"
 broker = "192.168.1.22:1883"
-
-#[devices]
+bridgename = "MacMQTTBridge"
 
 [[devices.temperaturesensor]]
 displayname = "Balcony Temperature"

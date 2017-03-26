@@ -25,10 +25,7 @@ func init() {
 
 func main() {
 
-	bridge := bridge.NewBridge(brokerIP, pinCode, "MQTTBridge", "MQTTBridge", "me!")
-
-	bridge.AddServices(readConfigFile()) //readConfig())
-
-	bridge.Start()
-
+	bridge := bridge.New(brokerIP, pinCode, bridgeName, "MQTTBridge", "N/A")
+	//bridge.EnableLogs()
+	bridge.Start(readConfigFile())
 }

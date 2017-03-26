@@ -3,21 +3,24 @@ package bridge
 import (
 	"log"
 	"os"
+	"time"
 
 	"github.com/brutella/hc"
 	"github.com/brutella/hc/accessory"
+	l "github.com/brutella/hc/log"
 	"github.com/brutella/hc/service"
 	"github.com/danward79/MQTTHomekitBridge/logging"
 	"github.com/danward79/Thingamabob/clientService"
 )
 
-// AccessoryDevices stores a list of available accessory device types for the bridge
+// AccessoryTypes stores a list of available accessory device types for the bridge
 var AccessoryTypes = []string{"temperaturesensor", "lightsensor"}
 
 // BridgeableDevice is a device that can be bridged between homekit and mqtt
 type BridgeableDevice interface {
 	Update([]byte) error
 	Service() *service.Service
+	Acc() *accessory.Accessory
 	Topic() string
 }
 
@@ -25,67 +28,60 @@ type BridgeableDevice interface {
 type Bridge struct {
 	*accessory.Accessory
 
-	transport       hc.Transport
-	transportConfig hc.Config
-	deviceList      map[string]BridgeableDevice
+	deviceList map[string]BridgeableDevice
 
 	mqttClient *clientService.Client
 	logger     *logging.Logger
 }
 
-// NewBridge provides a new bridge device for accepting services.
-func NewBridge(brokerIP, pin, name, model, manufacturer string) *Bridge {
+// New provides a new bridge device for accepting services.
+func New(brokerIP, pin, name, model, manufacturer string) *Bridge {
 	b := Bridge{
 		Accessory: accessory.New(accessory.Info{
 			Name:         name,
+			SerialNumber: "000",
 			Model:        model,
 			Manufacturer: manufacturer,
 		}, accessory.TypeBridge),
-		transportConfig: hc.Config{Pin: pin},
-		deviceList:      make(map[string]BridgeableDevice),
-		mqttClient:      clientService.New(brokerIP, "MQTTHomekitBridge", false),
-		logger:          logging.New("MQTTHomekitBridge"),
+
+		deviceList: make(map[string]BridgeableDevice),
+
+		mqttClient: clientService.New(brokerIP, "MQTTHomekitBridge", false),
+
+		logger: logging.New("MQTTHomekitBridge"),
 	}
 
 	b.logger.Enable()
 	b.logger.Message("New Bridge device created")
+
 	return &b
 }
 
-// AddServices add BridgeableDevice to the Bridge
-func (b *Bridge) AddServices(devices []BridgeableDevice) {
-
-	for _, d := range devices {
-		b.AddService(d.Service())
-
-		if _, ok := b.deviceList[d.Topic()]; !ok {
-			b.logger.Message("Adding service: TOPIC", d.Topic())
-			b.deviceList[d.Topic()] = d
-		}
-	}
-}
-
 // Start transport
-func (b *Bridge) Start() {
+func (b *Bridge) Start(devices *[]BridgeableDevice) {
 	b.logger.Message("Starting")
+
+	b.populateDeviceList(devices)
 
 	b.subscribeTopics()
 
-	var err error
-	b.transport, err = hc.NewIPTransport(b.transportConfig, b.Accessory)
+	accessories := createAccessoryList(b.deviceList)
+
+	t, err := hc.NewIPTransport(hc.Config{}, b.Accessory, accessories...)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	hc.OnTermination(func() {
-		if b.transport != nil {
-			b.transport.Stop()
-		}
+
+		t.Stop()
+
+		time.Sleep(500 * time.Millisecond)
 
 		os.Exit(1)
 	})
 
-	b.transport.Start()
+	t.Start()
 }
 
 func (b *Bridge) subscribeTopics() chan clientService.Message {
@@ -109,5 +105,33 @@ func (b *Bridge) watch(f <-chan clientService.Message) {
 	for msg := range f {
 		b.deviceList[msg.Topic()].Update(msg.Payload())
 	}
+}
 
+func createAccessoryList(devicelist map[string]BridgeableDevice) []*accessory.Accessory {
+	var a []*accessory.Accessory
+
+	for _, v := range devicelist {
+		a = append(a, v.Acc())
+	}
+
+	return a
+}
+
+func (b *Bridge) populateDeviceList(devices *[]BridgeableDevice) {
+	for _, d := range *devices {
+		if _, ok := b.deviceList[d.Topic()]; !ok {
+			b.logger.Message("Adding Accessory: TOPIC", d.Topic())
+			b.deviceList[d.Topic()] = d
+		}
+	}
+}
+
+// EnableLogs detailed debug logs
+func (b *Bridge) EnableLogs() {
+	l.Debug.Enable()
+}
+
+// DisableLogs detailed debug logs
+func (b *Bridge) DisableLogs() {
+	l.Debug.Disable()
 }

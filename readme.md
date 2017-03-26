@@ -29,6 +29,7 @@ A simple config file should allow mapping the devices to be bridged. TOML may be
 
 #pin = "10340567"
 broker = "192.168.1.22:1883"
+bridgename = "MacMQTTBridge"
 
 [[devices.temperaturesensor]]
 displayname = "Balcony Temperature"
@@ -45,4 +46,11 @@ topic = "home/balcony/light"
 [[devices.lightsensor]]
 displayname = "Lounge Light"
 topic = "home/lounge/light"
+```
+### Build
+On the raspberry pi this can be built using the following
+```
+go get -u github.com/danward79/MQTTHomekitBridge
+cd $GOPATH/src/github.com/danward79/MQTTHomekitBridge/cmd
+GOOS=linux GOARCH=arm GOARM=7 go build
 ```

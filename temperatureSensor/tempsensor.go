@@ -3,15 +3,15 @@ package temperatureSensor
 import (
 	"strconv"
 
-	"github.com/brutella/hc/characteristic"
+	"github.com/brutella/hc/accessory"
 	"github.com/brutella/hc/service"
 )
 
 // TemperatureSensor stores the details of a device that is being bridged
 type TemperatureSensor struct {
+	*accessory.Accessory
 	*service.TemperatureSensor
 
-	Name  *characteristic.Name
 	topic string
 }
 
@@ -19,6 +19,7 @@ type TemperatureSensor struct {
 func New(topic string, displayName string) *TemperatureSensor {
 
 	t := TemperatureSensor{
+		Accessory:         accessory.New(accessory.Info{Name: displayName}, accessory.TypeThermostat),
 		TemperatureSensor: service.NewTemperatureSensor(),
 
 		topic: topic,
@@ -26,9 +27,8 @@ func New(topic string, displayName string) *TemperatureSensor {
 
 	t.TemperatureSensor.CurrentTemperature.SetMinValue(-40)
 	t.TemperatureSensor.CurrentTemperature.SetMaxValue(100)
-	t.Name = characteristic.NewName()
-	t.Name.SetValue(displayName)
-	t.AddCharacteristic(t.Name.Characteristic)
+
+	t.AddService(t.TemperatureSensor.Service)
 
 	return &t
 }
@@ -45,6 +45,11 @@ func (t *TemperatureSensor) Service() *service.Service {
 	return t.TemperatureSensor.Service
 }
 
+// Acc returns the accessory
+func (t *TemperatureSensor) Acc() *accessory.Accessory {
+	return t.Accessory
+}
+
 // Topic returns the topic
 func (t *TemperatureSensor) Topic() string {
 	return t.topic
@@ -56,6 +61,5 @@ func parseFloat64(s string, defaultValue float64) float64 {
 		return defaultValue
 	}
 
-	//fmt.Println("parseFloat: String:", s, "Float:", f)
 	return f
 }
