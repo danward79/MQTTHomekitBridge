@@ -33,9 +33,9 @@ func newCurrentAmbientLightLevel() *CurrentAmbientLightLevel {
 	char.Perms = []string{characteristic.PermRead, characteristic.PermEvents}
 	char.SetMinValue(0)
 	char.SetMaxValue(100)
-	char.SetStepValue(0.1)
+	char.SetStepValue(1)
 	char.SetValue(0)
-	char.Unit = characteristic.UnitPercentage //TODO: Fix units.. Lus still showing....
+	char.Unit = characteristic.UnitPercentage //TODO: Fix units. Lux still showing...
 
 	return &CurrentAmbientLightLevel{char}
 }

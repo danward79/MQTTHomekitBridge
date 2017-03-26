@@ -6,3 +6,5 @@ delete/
 undefined/
 
 cmd/MQTTBridge/
+
+cmd/MacMQTTBridge/

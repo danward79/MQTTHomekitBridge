@@ -3,15 +3,15 @@ package lightSensor
 import (
 	"strconv"
 
-	"github.com/brutella/hc/characteristic"
+	"github.com/brutella/hc/accessory"
 	"github.com/brutella/hc/service"
 )
 
 // LightSensor stores the details of a device that is being bridged
 type LightSensor struct {
+	*accessory.Accessory
 	*CustomLightSensor
 
-	Name  *characteristic.Name
 	topic string
 }
 
@@ -19,7 +19,7 @@ type LightSensor struct {
 func New(topic, displayName string) *LightSensor {
 
 	l := LightSensor{
-		//LightSensor: service.NewLightSensor(),
+		Accessory:         accessory.New(accessory.Info{Name: displayName}, accessory.TypeSensor), // TODO: Check TypeSensor
 		CustomLightSensor: newLightSensor(),
 
 		topic: topic,
@@ -27,9 +27,8 @@ func New(topic, displayName string) *LightSensor {
 
 	l.CustomLightSensor.CurrentAmbientLightLevel.SetMinValue(0)
 	l.CustomLightSensor.CurrentAmbientLightLevel.SetMaxValue(100)
-	l.Name = characteristic.NewName()
-	l.Name.SetValue(displayName)
-	l.AddCharacteristic(l.Name.Characteristic)
+
+	l.AddService(l.CustomLightSensor.Service)
 
 	return &l
 }
@@ -44,6 +43,11 @@ func (l *LightSensor) Update(value []byte) error {
 // Service returns the service
 func (l *LightSensor) Service() *service.Service {
 	return l.CustomLightSensor.Service
+}
+
+// Acc returns the accessory
+func (l *LightSensor) Acc() *accessory.Accessory {
+	return l.Accessory
 }
 
 // Topic returns the topic

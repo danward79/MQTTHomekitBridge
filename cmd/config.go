@@ -13,10 +13,12 @@ import (
 const (
 	// PIN default pin code
 	PIN = "00102003"
+	//BRIDGENAME default bridge name
+	BRIDGENAME = "MQTTBridge"
 )
 
 var (
-	brokerIP, pinCode string
+	brokerIP, pinCode, bridgeName string
 )
 
 func loadConfig() error {
@@ -44,13 +46,17 @@ func loadConfig() error {
 	viper.SetDefault("pin", PIN)
 	pinCode = viper.GetString("pin")
 
+	viper.SetDefault("bridgename", BRIDGENAME)
+	bridgeName = viper.GetString("bridgename")
+
 	l.Message("Pin:", pinCode)
 	l.Message("Broker:", brokerIP)
+	l.Message("Bridge Name:", bridgeName)
 
 	return nil
 }
 
-func readConfigFile() []bridge.BridgeableDevice {
+func readConfigFile() *[]bridge.BridgeableDevice {
 	devs := []bridge.BridgeableDevice{}
 
 	for _, t := range bridge.AccessoryTypes {
@@ -79,11 +85,11 @@ func readConfigFile() []bridge.BridgeableDevice {
 		}
 	}
 
-	return devs
+	return &devs
 }
 
 // readConfig previously used to load hard-coded configuration.
-func readConfig() []bridge.BridgeableDevice {
+func readConfig() *[]bridge.BridgeableDevice {
 	devs := []bridge.BridgeableDevice{}
 
 	devs = append(devs, temperatureSensor.New("home/bedroom/temp", "Bedroom Temperature"))
@@ -94,5 +100,5 @@ func readConfig() []bridge.BridgeableDevice {
 	devs = append(devs, lightSensor.New("home/lounge/light", "Lounge Light"))
 	devs = append(devs, lightSensor.New("home/balcony/light", "Balcony Light"))
 
-	return devs
+	return &devs
 }
